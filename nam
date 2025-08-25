@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <string.h>
+
+// Definição da estrutura de dados para uma carta do Super Trunfo
+typedef struct {
+    char estado[3]; // Ex: "SP"
+    char codigo_carta[5]; // Ex: "SP01"
+    char nome_cidade[50]; // Ex: "Sao Paulo"
+    int populacao; // Em número de habitantes
+    float area; // Em km²
+    float pib; // Em bilhoes de reais
+    int pontos_turisticos;
+    float densidade_populacional;
+    float pib_per_capita;
+} Carta;
+
+// A macro `COMPARE_ATTRIBUTE` simplifica a lógica de comparação.
+// Ela recebe o nome do atributo, a string do atributo, e a lógica de vitória (maior ou menor).
+#define COMPARE_ATTRIBUTE(attr_name, attr_string, win_if_greater) \
+    printf("Comparacao de cartas (Atributo: %s):\n", attr_string); \
+    printf("Carta 1 - %s (%s): %.2f\n", carta1.nome_cidade, carta1.estado, (float)carta1.attr_name); \
+    printf("Carta 2 - %s (%s): %.2f\n", carta2.nome_cidade, carta2.estado, (float)carta2.attr_name); \
+    if (win_if_greater) { \
+        if (carta1.attr_name > carta2.attr_name) { \
+            printf("Resultado: Carta 1 (%s) venceu!\n", carta1.nome_cidade); \
+        } else if (carta2.attr_name > carta1.attr_name) { \
+            printf("Resultado: Carta 2 (%s) venceu!\n", carta2.nome_cidade); \
+        } else { \
+            printf("Resultado: Empate!\n"); \
+        } \
+    } else { \
+        if (carta1.attr_name < carta2.attr_name) { \
+            printf("Resultado: Carta 1 (%s) venceu!\n", carta1.nome_cidade); \
+        } else if (carta2.attr_name < carta1.attr_name) { \
+            printf("Resultado: Carta 2 (%s) venceu!\n", carta2.nome_cidade); \
+        } else { \
+            printf("Resultado: Empate!\n"); \
+        } \
+    }
+
+int main() {
+    printf("--- Super Trunfo: Comparacao de Cartas ---\n\n");
+
+    // ===========================================
+    // 1. Receber os dados de duas cartas
+    // ===========================================
+    // Carta 1: Sao Paulo
+    Carta carta1;
+    strcpy(carta1.estado, "SP");
+    strcpy(carta1.codigo_carta, "SP01");
+    strcpy(carta1.nome_cidade, "Sao Paulo");
+    carta1.populacao = 12396372;
+    carta1.area = 1521.11;
+    carta1.pib = 763.8;
+    carta1.pontos_turisticos = 25;
+
+    // Carta 2: Rio de Janeiro
+    Carta carta2;
+    strcpy(carta2.estado, "RJ");
+    strcpy(carta2.codigo_carta, "RJ01");
+    strcpy(carta2.nome_cidade, "Rio de Janeiro");
+    carta2.populacao = 6775561;
+    carta2.area = 1200.27;
+    carta2.pib = 354.3;
+    carta2.pontos_turisticos = 18;
+
+    // ===========================================
+    // 2. Calcular Densidade Populacional e PIB per capita
+    // ===========================================
+    // Carta 1
+    carta1.densidade_populacional = carta1.populacao / carta1.area;
+    carta1.pib_per_capita = carta1.pib / (float)carta1.populacao * 1000000.0; // Converter PIB para milhoes e população para número absoluto
+
+    // Carta 2
+    carta2.densidade_populacional = carta2.populacao / carta2.area;
+    carta2.pib_per_capita = carta2.pib / (float)carta2.populacao * 1000000.0;
+
+    printf("Carta 1 (%s): Densidade Populacional = %.2f hab/km2, PIB per capita = R$ %.2f\n",
+           carta1.nome_cidade, carta1.densidade_populacional, carta1.pib_per_capita);
+    printf("Carta 2 (%s): Densidade Populacional = %.2f hab/km2, PIB per capita = R$ %.2f\n\n",
+           carta2.nome_cidade, carta2.densidade_populacional, carta2.pib_per_capita);
+
+    // ===========================================
+    // 3. Comparar um atributo escolhido
+    // ===========================================
+    // Definindo o atributo para comparacao. 
+    // Mude o valor desta variavel para escolher outro atributo.
+    // 1: Populacao, 2: Area, 3: PIB, 4: Pontos Turisticos, 5: Densidade Populacional, 6: PIB Per Capita
+    const int atributo_escolhido = 1;
+
+    // Estrutura de decisao para executar a comparacao correta
+    switch (atributo_escolhido) {
+        case 1:
+            COMPARE_ATTRIBUTE(populacao, "Populacao", 1);
+            break;
+        case 2:
+            COMPARE_ATTRIBUTE(area, "Area", 1);
+            break;
+        case 3:
+            COMPARE_ATTRIBUTE(pib, "PIB", 1);
+            break;
+        case 4:
+            COMPARE_ATTRIBUTE(pontos_turisticos, "Pontos Turisticos", 1);
+            break;
+        case 5:
+            // Regra especial: menor densidade populacional vence
+            COMPARE_ATTRIBUTE(densidade_populacional, "Densidade Populacional", 0);
+            break;
+        case 6:
+            COMPARE_ATTRIBUTE(pib_per_capita, "PIB Per Capita", 1);
+            break;
+        default:
+            printf("Atributo escolhido invalido.\n");
+            break;
+    }
+
+    return 0;
+}
